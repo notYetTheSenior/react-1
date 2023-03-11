@@ -1,24 +1,32 @@
 import logo from './logo.svg';
 import './App.css';
+import Users from "./components/users";
+import React, {useState} from "react";
+import API from "./API";
+import RenderPhrase from "./components/renderPhrase";
 
 function App() {
+  const [users, setUsers] = useState(API.users.fetchAll());
+
+  const handleDelete = (userId) => {
+    setUsers(users.filter((user) => user._id !== userId));
+  };
+
+  const handleToggleBookmark = (id) => {
+    setUsers(
+      users.map((user) => {
+        if (user._id === id) {
+          return { ...user, bookmark: !user.bookmark };
+        }
+        return user;
+      })
+    );
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <RenderPhrase length={users.length}/>
+      <Users users={users} onDelete={handleDelete} onToggleBookmark={handleToggleBookmark}/>
+    </>
   );
 }
 
